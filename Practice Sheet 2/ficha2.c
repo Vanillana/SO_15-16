@@ -89,6 +89,7 @@ int main(){
 
 
 // ex 6
+/*
 
 int main(int argc, char *argv[]){
 	// Matrix
@@ -118,24 +119,67 @@ int main(int argc, char *argv[]){
 		printf("\n");
 	}
 
-	// Search each column with one process and increment count when number is found
-	
-	int fpid[columns], status, exit_values[columns];
-	for(i = 0; i < columns; i++){
+	// Search each line with one process
+	int fpid[lines];
+	for(i = 0; i < lines; i++){
 		if((fpid[i] = fork()) == 0){
-			for(j = 0; j < lines; j++){
-				if(matrix[j][i] == number){
-					printf("Instance of %d at line %d column %d.\n",number, j+1, i+1);;
+			for(j = 0; j < columns; j++){
+				if(matrix[i][j] == number){
+					printf("Instance of %d at line %d column %d.\n",number, i+1, j+1);;
 				}
 			}
 			_exit(i+1);
 		}
-		
-	}
-	for(i = 0; i < columns; i++){
-		waitpid(fpid[i],&status,0);
-		exit_values[i] = WEXITSTATUS(status);
 	}
 	return 0;
 }
+*/
 
+// ex 7
+
+int main(int argc, char *argv[]){
+	// Matrix
+	int i, j, lines, columns, number;
+	if(argc != 4){
+		printf("Tem de introduzir numero de linhas, o numero de colunas e o numero a procurar.\n");
+		return 1;
+	}
+
+	lines = atoi(argv[1]);
+	columns = atoi(argv[2]);
+	number = atoi(argv[3]);
+	int matrix[lines][columns];
+	count = 0;
+
+	// Create matrix
+	for(i = 0; i < lines; i++){
+		for(j = 0; j < columns; j++){
+			matrix[i][j] = rand() % 10;
+		}
+	}
+	// Print matrix
+	for(i = 0; i < lines; i++){
+		for(j = 0; j < columns; j++){
+			printf("%d ",matrix[i][j]);
+		}
+		printf("\n");
+	}
+
+	// Search each line with one process
+	int fpid[lines], status;
+	for(i = 0; i < lines; i++){
+		if((fpid[i] = fork()) == 0){
+			for(j = 0; j < columns; j++){
+				if(matrix[i][j] == number){
+					printf("Instance of %d at line %d column %d.\n",number, i+1, j+1);;
+				}
+			}
+			_exit(i+1);
+		}
+		if(i > 0){
+			waitpid(fpid[i],&status,0);
+		}
+		
+	}
+	return 0;
+}
