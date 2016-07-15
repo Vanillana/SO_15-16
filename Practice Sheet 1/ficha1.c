@@ -1,9 +1,11 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-/*
+
 // ex 1
+/*
 int main(int argc, char *argv[]){
 	char input;
 	while(read(0,&input,1) > 0){
@@ -14,9 +16,9 @@ int main(int argc, char *argv[]){
 */
 
 
-/*
-// ex 2
 
+// ex 2
+/*
 int main(int argc, char *argv[]){
 	if(argc != 2){
 		printf("Numero de argumentos invalido.");
@@ -32,34 +34,54 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 
-	for(i = 0; i < 10*1024; i++){
+	for(i = 0; i < 10*1024*1024; i++){
 		write(file,&c,1);
 	}
 
 	close(file);
 	return 0;
 }
-
 */
 
-// ex 3
 
+// ex 3
+/*
 int main(int argc, char *argv[]){
 	if(argc != 2){
 		printf("Numero de argumentos invalido.\n");
 		return 1;
 	}
+	// long type is the backbone
+	long size = strtol(argv[1],0,10);
 
-	int size = atoi(argv[1]);
+	char input[size];
 
-	char *input;
-	input = malloc(sizeof(char) * size);
-
-	while(read(0,&input,sizeof(char) * size) > 0){
-		write(1,&input,sizeof(char) * size);
-		input = "";
+	while(read(0,input,size) > 0){
+		write(1,input,size);
+		memset(input,0,size);
 	}
 
 	return 0;
 }
+*/
+
+/*
+// ex 4
+
+time ./ficha1 1 < ex2.txt  > lixo.txt 
+
+real	2m15.291s
+user	0m0.936s
+sys	2m14.340s
+
+
+
+time ./ficha1 1024 < ex2.txt  > lixo.txt 
+
+real	0m0.147s
+user	0m0.004s
+sys	0m0.140s
+
+*/
+
 
