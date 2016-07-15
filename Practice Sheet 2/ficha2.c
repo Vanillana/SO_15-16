@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <time.h>
+#include <stdlib.h>
 
-#define RAND_MAX 9
+int count;
 
 // ex 1
 /*
@@ -92,7 +92,7 @@ int main(){
 
 int main(int argc, char *argv[]){
 	// Matrix
-	int i, j, lines, columns, number, count;
+	int i, j, lines, columns, number;
 	if(argc != 4){
 		printf("Tem de introduzir numero de linhas, o numero de colunas e o numero a procurar.\n");
 		return 1;
@@ -105,10 +105,9 @@ int main(int argc, char *argv[]){
 	count = 0;
 
 	// Create matrix
-	srand(time(NULL));
 	for(i = 0; i < lines; i++){
 		for(j = 0; j < columns; j++){
-			matrix[i][j] = rand();
+			matrix[i][j] = rand() % 10;
 		}
 	}
 	// Print matrix
@@ -120,15 +119,23 @@ int main(int argc, char *argv[]){
 	}
 
 	// Search each column with one process and increment count when number is found
-	int fpid[columns];
+	
+	int fpid[columns], status, exit_values[columns];
 	for(i = 0; i < columns; i++){
 		if((fpid[i] = fork()) == 0){
 			for(j = 0; j < lines; j++){
-				if(matrix[i][j] == number){
-					count++;
+				if(matrix[j][i] == number){
+					printf("Instance of %d at line %d column %d.\n",number, j+1, i+1);;
 				}
 			}
+			_exit(i+1);
 		}
+		
+	}
+	for(i = 0; i < columns; i++){
+		waitpid(fpid[i],&status,0);
+		exit_values[i] = WEXITSTATUS(status);
 	}
 	return 0;
 }
+
